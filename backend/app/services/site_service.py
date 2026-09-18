@@ -125,6 +125,42 @@ class SiteService:
                     "project_id": str(site["project_id"]),
                 },
             }
-            features.append(feature)
-
         return SiteGeoJSONResponse(features=features)
+
+    async def update_site(
+        self, site_id: uuid.UUID, data: Any, user: User
+    ) -> SiteResponse:
+        """Update a site."""
+        site = await self.site_repo.get_model_by_id(site_id)
+        if site is None:
+            raise NotFoundError("Site", str(site_id))
+
+        await self._validate_project_access(site.project_id, user)
+
+        update_data = {}
+        if data.name is not None:
+            update_data["name"] = data.name
+        if data.description is not None:
+            update_data["description"] = data.description
+        if data.geometry is not None:
+            polygon = validate_geojson_geometry(data.geometry)
+            update_data["geojson"] = data.geometry
+            update_data["area_hectares"] = round(polygon.area * SQ_DEGREE_TO_HECTARES, 2)
+
+        site_data = await self.site_repo.update(site, **update_data)
+        if site_data is None:
+            raise NotFoundError("Site", str(site_id))
+            
+        logger.info("Site updated: %s", site_id)
+        return SiteResponse(**site_data)
+
+    async def delete_site(self, site_id: uuid.UUID, user: User) -> None:
+        """Delete a site."""
+        site = await self.site_repo.get_model_by_id(site_id)
+        if site is None:
+            raise NotFoundError("Site", str(site_id))
+
+        await self._validate_project_access(site.project_id, user)
+        
+        await self.site_repo.delete(site)
+        logger.info("Site deleted: %s", site_id)

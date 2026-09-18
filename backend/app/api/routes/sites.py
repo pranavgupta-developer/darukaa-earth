@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.dependencies.auth import get_current_user
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.site import SiteCreate, SiteGeoJSONResponse, SiteListResponse, SiteResponse
+from app.schemas.site import SiteCreate, SiteGeoJSONResponse, SiteListResponse, SiteResponse, SiteUpdate
 from app.services.site_service import SiteService
 
 router = APIRouter()
@@ -81,3 +81,34 @@ async def get_site(
     """Get a specific site. Requires project owner access."""
     service = SiteService(db)
     return await service.get_site(site_id, current_user)
+
+
+@router.put(
+    "/sites/{site_id}",
+    response_model=SiteResponse,
+    summary="Update a site",
+)
+async def update_site(
+    site_id: uuid.UUID,
+    data: SiteUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> SiteResponse:
+    """Update a site."""
+    service = SiteService(db)
+    return await service.update_site(site_id, data, current_user)
+
+
+@router.delete(
+    "/sites/{site_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a site",
+)
+async def delete_site(
+    site_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """Delete a site."""
+    service = SiteService(db)
+    await service.delete_site(site_id, current_user)

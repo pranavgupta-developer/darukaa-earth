@@ -100,4 +100,10 @@ npm run dev
 1. Open http://localhost:5173 in your browser.
 2. Click **Create one** to register a new account.
 3. Once logged in, you can create a Project.
-4. Open the Project to draw Site polygons on the map and view mock analytics!
+4. Open the Project to draw Site polygons on the map.
+5. After creating some sites, you can generate realistic mock analytics data by running the seed script:
+   ```bash
+   cd backend
+   python -m scripts.seed_analytics
+   ```
+6. Refresh the page to view the mock analytics for your sites!

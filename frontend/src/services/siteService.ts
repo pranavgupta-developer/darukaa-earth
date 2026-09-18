@@ -27,4 +27,13 @@ export const siteService = {
     const response = await api.get<Site>(`/sites/${siteId}`);
     return response.data;
   },
+
+  async update(siteId: string, data: Partial<SiteCreate>): Promise<Site> {
+    const response = await api.put<Site>(`/sites/${siteId}`, data);
+    return response.data;
+  },
+
+  async delete(siteId: string): Promise<void> {
+    await api.delete(`/sites/${siteId}`);
+  },
 };

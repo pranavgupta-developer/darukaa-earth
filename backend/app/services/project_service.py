@@ -93,3 +93,20 @@ class ProjectService:
         project = await self.repo.update(project, **update_data)
         logger.info("Project updated: %s", project.id)
         return await self._to_response(project)
+
+    async def delete_project(self, project_id: uuid.UUID, user: User) -> None:
+        """
+        Delete a project. Enforces owner-only access.
+
+        Raises:
+            NotFoundError: If project doesn't exist.
+            AuthorizationError: If user is not the project owner.
+        """
+        project = await self.repo.get_by_id(project_id)
+        if project is None:
+            raise NotFoundError("Project", str(project_id))
+        if project.owner_id != user.id:
+            raise AuthorizationError("Not authorized to delete this project")
+        
+        await self.repo.delete(project)
+        logger.info("Project deleted: %s", project.id)

@@ -22,7 +22,9 @@ const Navbar: React.FC = () => {
       </Link>
       {isAuthenticated && (
         <div className="navbar-actions">
-          <span className="navbar-user">{user?.name}</span>
+          <Link to="/settings" className="navbar-user" style={{ textDecoration: 'none' }}>
+            {user?.name}
+          </Link>
           <button onClick={handleLogout} className="btn btn-ghost btn-sm">
             Sign Out
           </button>

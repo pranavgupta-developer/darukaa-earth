@@ -10,7 +10,9 @@ import LoginPage from './features/auth/LoginPage';
 import RegisterPage from './features/auth/RegisterPage';
 import ProjectListPage from './features/projects/ProjectListPage';
 import CreateProjectPage from './features/projects/CreateProjectPage';
+import EditProjectPage from './features/projects/EditProjectPage';
 import ProjectDetailPage from './features/projects/ProjectDetailPage';
+import SettingsPage from './features/settings/SettingsPage';
 
 const App: React.FC = () => {
   return (
@@ -43,6 +45,22 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <ProjectDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/:projectId/edit"
+            element={
+              <ProtectedRoute>
+                <EditProjectPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <SettingsPage />
               </ProtectedRoute>
             }
           />

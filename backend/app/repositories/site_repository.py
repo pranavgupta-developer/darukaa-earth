@@ -93,3 +93,24 @@ class SiteRepository:
             "created_at": row.created_at,
             "updated_at": row.updated_at,
         }
+
+    async def get_model_by_id(self, site_id: uuid.UUID) -> Site | None:
+        """Fetch a site by ID returning the SQLAlchemy model."""
+        result = await self.db.execute(select(Site).where(Site.id == site_id))
+        return result.scalar_one_or_none()
+
+    async def update(self, site: Site, **kwargs: object) -> dict[str, Any] | None:
+        """Update site fields."""
+        if "geojson" in kwargs:
+            geojson_str = json.dumps(kwargs.pop("geojson"))
+            site.geometry = ST_GeomFromGeoJSON(geojson_str)
+        for key, value in kwargs.items():
+            if value is not None:
+                setattr(site, key, value)
+        await self.db.commit()
+        return await self.get_by_id(site.id)
+
+    async def delete(self, site: Site) -> None:
+        """Delete a site."""
+        await self.db.delete(site)
+        await self.db.commit()

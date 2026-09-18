@@ -45,6 +45,15 @@ class SiteCreate(BaseModel):
     )
 
 
+class SiteUpdate(BaseModel):
+    """
+    Request schema for updating a site.
+    """
+    name: str | None = Field(None, min_length=1, max_length=255)
+    description: str | None = Field(None, max_length=2000)
+    geometry: dict[str, Any] | None = Field(None, description="GeoJSON Polygon geometry object")
+
+
 class SiteResponse(BaseModel):
     """Response schema for a site with GeoJSON geometry."""
 

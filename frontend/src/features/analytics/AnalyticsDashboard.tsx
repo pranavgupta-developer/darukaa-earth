@@ -81,7 +81,6 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ siteId }) => {
   }
 
   const metricConfig = METRIC_CONFIG[activeMetric];
-  const values = analytics.data.map((d) => d[activeMetric] as number | null).filter((v): v is number => v !== null);
   const labels = analytics.data.map((d) =>
     new Date(d.recorded_date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' }),
   );

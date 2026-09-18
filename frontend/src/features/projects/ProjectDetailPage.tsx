@@ -132,6 +132,26 @@ const ProjectDetailPage: React.FC = () => {
           <div className="project-detail-info">
             <h1>{project.name}</h1>
             <span className="badge badge-outline">{project.project_type}</span>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
+              <button onClick={() => navigate(`/projects/${project.id}/edit`)} className="btn btn-ghost btn-sm">
+                Edit Project
+              </button>
+              <button 
+                onClick={async () => {
+                  if (confirm('Are you sure you want to delete this project? This will permanently delete all its sites and analytics.')) {
+                    try {
+                      await projectService.delete(project.id);
+                      navigate('/dashboard');
+                    } catch (err) {
+                      alert('Failed to delete project.');
+                    }
+                  }
+                }} 
+                className="btn btn-danger btn-sm"
+              >
+                Delete Project
+              </button>
+            </div>
           </div>
           {project.description && <p className="project-detail-desc">{project.description}</p>}
         </div>
@@ -219,8 +239,29 @@ const ProjectDetailPage: React.FC = () => {
                       onKeyDown={(e) => e.key === 'Enter' && handleSiteClick(site.id)}
                     >
                       <div className="site-list-item-name">{site.name}</div>
-                      <div className="site-list-item-meta">
-                        {site.area_hectares ? `${site.area_hectares.toFixed(1)} ha` : 'N/A'}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div className="site-list-item-meta">
+                          {site.area_hectares ? `${site.area_hectares.toFixed(1)} ha` : 'N/A'}
+                        </div>
+                        <button 
+                          className="btn btn-ghost btn-sm text-muted"
+                          style={{ padding: '0 4px' }}
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            if (confirm('Delete this site?')) {
+                              try {
+                                await siteService.delete(site.id);
+                                if (selectedSiteId === site.id) setSelectedSiteId(null);
+                                await fetchData();
+                              } catch (err) {
+                                alert('Failed to delete site.');
+                              }
+                            }
+                          }}
+                          title="Delete site"
+                        >
+                          ✕
+                        </button>
                       </div>
                     </li>
                   ))}

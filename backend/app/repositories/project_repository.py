@@ -57,3 +57,8 @@ class ProjectRepository:
             select(func.count(Site.id)).where(Site.project_id == project_id)
         )
         return result.scalar_one()
+
+    async def delete(self, project: Project) -> None:
+        """Delete a project."""
+        await self.db.delete(project)
+        await self.db.commit()

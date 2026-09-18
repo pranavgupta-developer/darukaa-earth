@@ -80,3 +80,18 @@ async def update_project(
     """Update a project. Requires owner access."""
     service = ProjectService(db)
     return await service.update_project(project_id, data, current_user)
+
+
+@router.delete(
+    "/{project_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a project",
+)
+async def delete_project(
+    project_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """Delete a project and all associated sites/analytics. Requires owner access."""
+    service = ProjectService(db)
+    await service.delete_project(project_id, current_user)

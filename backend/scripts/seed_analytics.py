@@ -22,6 +22,8 @@ from datetime import date, timedelta
 from sqlalchemy import select
 
 from app.db.session import AsyncSessionLocal
+import app.models  # Ensures all models are imported and registered
+from app.models.project import Project
 from app.models.site import Site
 from app.models.site_analytics import SiteAnalytics
 

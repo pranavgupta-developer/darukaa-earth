@@ -186,10 +186,11 @@ const ProjectDetailPage: React.FC = () => {
                 {createError && <div className="alert alert-error alert-sm">{createError}</div>}
                 <form onSubmit={handleCreateSite}>
                   <div className="form-group">
-                    <label htmlFor="site-name">Site Name</label>
+                    <label htmlFor="site-name" className="form-label">Site Name</label>
                     <input
                       id="site-name"
                       type="text"
+                      className="form-input"
                       value={siteName}
                       onChange={(e) => setSiteName(e.target.value)}
                       placeholder="e.g., North Canopy Zone"
@@ -197,9 +198,10 @@ const ProjectDetailPage: React.FC = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="site-desc">Description</label>
+                    <label htmlFor="site-desc" className="form-label">Description</label>
                     <textarea
                       id="site-desc"
+                      className="form-input"
                       value={siteDesc}
                       onChange={(e) => setSiteDesc(e.target.value)}
                       placeholder="Optional description..."

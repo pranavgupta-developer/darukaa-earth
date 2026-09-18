@@ -13,6 +13,7 @@ import CreateProjectPage from './features/projects/CreateProjectPage';
 import EditProjectPage from './features/projects/EditProjectPage';
 import ProjectDetailPage from './features/projects/ProjectDetailPage';
 import SettingsPage from './features/settings/SettingsPage';
+import GlobalAnalyticsPage from './features/analytics/GlobalAnalyticsPage';
 
 const App: React.FC = () => {
   return (
@@ -61,6 +62,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <GlobalAnalyticsPage />
               </ProtectedRoute>
             }
           />

@@ -142,3 +142,22 @@ export interface ApiError {
   error: string;
   detail?: unknown;
 }
+
+export interface GlobalAnalyticsKPIs {
+  total_carbon_sequestered: number;
+  average_ndvi: number;
+  average_biodiversity: number;
+  average_canopy_cover: number;
+  total_monitored_area_ha: number;
+}
+
+export interface ComparisonSeries {
+  entity_id: string;
+  entity_name: string;
+  data: AnalyticsDataPoint[];
+}
+
+export interface GlobalAnalyticsResponse {
+  kpis: GlobalAnalyticsKPIs;
+  comparison_series: ComparisonSeries[];
+}

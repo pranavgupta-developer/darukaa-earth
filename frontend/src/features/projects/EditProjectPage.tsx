@@ -97,10 +97,11 @@ const EditProjectPage: React.FC = () => {
 
             <form onSubmit={handleSubmit} className="auth-form">
               <div className="form-group">
-                <label htmlFor="project-name">Project Name</label>
+                <label htmlFor="project-name" className="form-label">Project Name</label>
                 <input
                   id="project-name"
                   type="text"
+                  className="form-input"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -109,9 +110,10 @@ const EditProjectPage: React.FC = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="project-type">Project Type</label>
+                <label htmlFor="project-type" className="form-label">Project Type</label>
                 <select
                   id="project-type"
+                  className="form-input"
                   value={projectType}
                   onChange={(e) => setProjectType(e.target.value as ProjectType)}
                   required
@@ -125,9 +127,10 @@ const EditProjectPage: React.FC = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="project-desc">Description</label>
+                <label htmlFor="project-desc" className="form-label">Description</label>
                 <textarea
                   id="project-desc"
+                  className="form-input"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}

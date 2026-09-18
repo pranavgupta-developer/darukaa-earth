@@ -11,6 +11,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.site_analytics import SiteAnalytics
+from app.models.site import Site
+from app.models.project import Project
 
 
 class AnalyticsRepository:
@@ -54,3 +56,37 @@ class AnalyticsRepository:
         """Bulk insert analytics records (used by seed script)."""
         self.db.add_all(records)
         await self.db.commit()
+    async def get_global_analytics(
+        self,
+        user_id: uuid.UUID,
+        project_ids: list[uuid.UUID] | None = None,
+        site_ids: list[uuid.UUID] | None = None,
+        project_types: list[str] | None = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
+    ) -> list[tuple[SiteAnalytics, Site, Project]]:
+        """
+        Query global analytics across all user projects/sites with optional filters.
+        Returns tuples of (SiteAnalytics, Site, Project).
+        """
+        query = (
+            select(SiteAnalytics, Site, Project)
+            .join(Site, SiteAnalytics.site_id == Site.id)
+            .join(Project, Site.project_id == Project.id)
+            .where(Project.owner_id == user_id)
+            .order_by(SiteAnalytics.recorded_date.asc())
+        )
+
+        if project_ids:
+            query = query.where(Project.id.in_(project_ids))
+        if site_ids:
+            query = query.where(Site.id.in_(site_ids))
+        if project_types:
+            query = query.where(Project.project_type.in_(project_types))
+        if start_date:
+            query = query.where(SiteAnalytics.recorded_date >= start_date)
+        if end_date:
+            query = query.where(SiteAnalytics.recorded_date <= end_date)
+
+        result = await self.db.execute(query)
+        return list(result.all())

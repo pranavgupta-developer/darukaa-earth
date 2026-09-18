@@ -22,6 +22,9 @@ const Navbar: React.FC = () => {
       </Link>
       {isAuthenticated && (
         <div className="navbar-actions">
+          <Link to="/analytics" className="navbar-user" style={{ textDecoration: 'none', marginRight: '1rem' }}>
+            Analytics
+          </Link>
           <Link to="/settings" className="navbar-user" style={{ textDecoration: 'none' }}>
             {user?.name}
           </Link>

@@ -17,6 +17,7 @@ from app.repositories.analytics_repository import AnalyticsRepository
 from app.repositories.project_repository import ProjectRepository
 from app.repositories.site_repository import SiteRepository
 from app.schemas.analytics import AnalyticsDataPoint, AnalyticsSummary, SiteAnalyticsResponse
+from app.schemas.global_analytics import GlobalAnalyticsResponse, GlobalAnalyticsKPIs, ComparisonSeries
 
 logger = get_logger(__name__)
 
@@ -120,4 +121,127 @@ class AnalyticsService:
             min_value=round(min_val, 4),
             max_value=round(max_val, 4),
             trend_pct=trend,
+        )
+
+    async def get_global_analytics(
+        self,
+        user: User,
+        project_ids: list[uuid.UUID] | None = None,
+        site_ids: list[uuid.UUID] | None = None,
+        project_types: list[str] | None = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
+        compare_by: str = "site",
+    ) -> GlobalAnalyticsResponse:
+        """
+        Aggregate and structure global analytics for cross-project comparison.
+        """
+        records = await self.analytics_repo.get_global_analytics(
+            user_id=user.id,
+            project_ids=project_ids,
+            site_ids=site_ids,
+            project_types=project_types,
+            start_date=start_date,
+            end_date=end_date,
+        )
+
+        if not records:
+            return GlobalAnalyticsResponse(
+                kpis=GlobalAnalyticsKPIs(
+                    total_carbon_sequestered=0,
+                    average_ndvi=0,
+                    average_biodiversity=0,
+                    average_canopy_cover=0,
+                    total_monitored_area_ha=0,
+                ),
+                comparison_series=[],
+            )
+
+        # 1. Group records by comparison entity (site or project)
+        series_map = {}
+        distinct_sites = {}
+        latest_carbon_by_site = {}
+
+        for analytics, site, project in records:
+            # Track distinct sites for area calculation and latest carbon
+            distinct_sites[str(site.id)] = site.area_hectares or 0
+            if analytics.carbon_sequestration_tons is not None:
+                latest_carbon_by_site[str(site.id)] = analytics.carbon_sequestration_tons
+
+            if compare_by == "project":
+                entity_id = str(project.id)
+                entity_name = project.name
+            else:
+                entity_id = str(site.id)
+                entity_name = f"{project.name} - {site.name}"
+
+            if entity_id not in series_map:
+                series_map[entity_id] = {
+                    "entity_id": entity_id,
+                    "entity_name": entity_name,
+                    "data_points": []
+                }
+
+            series_map[entity_id]["data_points"].append(
+                AnalyticsDataPoint(
+                    recorded_date=analytics.recorded_date,
+                    ndvi=analytics.ndvi,
+                    carbon_sequestration_tons=analytics.carbon_sequestration_tons,
+                    biodiversity_index=analytics.biodiversity_index,
+                    canopy_cover_pct=analytics.canopy_cover_pct,
+                )
+            )
+
+        # 2. Build comparison series
+        comparison_series = []
+        for entity_data in series_map.values():
+            date_map = {}
+            for dp in entity_data["data_points"]:
+                d_str = dp.recorded_date.isoformat()
+                if d_str not in date_map:
+                    date_map[d_str] = {"ndvi": [], "carbon": [], "bio": [], "canopy": []}
+                if dp.ndvi is not None: date_map[d_str]["ndvi"].append(dp.ndvi)
+                if dp.carbon_sequestration_tons is not None: date_map[d_str]["carbon"].append(dp.carbon_sequestration_tons)
+                if dp.biodiversity_index is not None: date_map[d_str]["bio"].append(dp.biodiversity_index)
+                if dp.canopy_cover_pct is not None: date_map[d_str]["canopy"].append(dp.canopy_cover_pct)
+
+            aggregated_data = []
+            for d_str, vals in date_map.items():
+                aggregated_data.append(AnalyticsDataPoint(
+                    recorded_date=date.fromisoformat(d_str),
+                    ndvi=sum(vals["ndvi"])/len(vals["ndvi"]) if vals["ndvi"] else None,
+                    carbon_sequestration_tons=sum(vals["carbon"]) if vals["carbon"] else None,
+                    biodiversity_index=sum(vals["bio"])/len(vals["bio"]) if vals["bio"] else None,
+                    canopy_cover_pct=sum(vals["canopy"])/len(vals["canopy"]) if vals["canopy"] else None,
+                ))
+            
+            # Sort by date
+            aggregated_data.sort(key=lambda x: x.recorded_date)
+
+            comparison_series.append(ComparisonSeries(
+                entity_id=entity_data["entity_id"],
+                entity_name=entity_data["entity_name"],
+                data=aggregated_data,
+            ))
+
+        # 3. Calculate Global KPIs
+        all_ndvi = [a.ndvi for a, s, p in records if a.ndvi is not None]
+        all_bio = [a.biodiversity_index for a, s, p in records if a.biodiversity_index is not None]
+        all_canopy = [a.canopy_cover_pct for a, s, p in records if a.canopy_cover_pct is not None]
+
+        total_area = sum(distinct_sites.values())
+        total_carbon = sum(latest_carbon_by_site.values())
+        avg_ndvi = sum(all_ndvi) / len(all_ndvi) if all_ndvi else 0
+        avg_bio = sum(all_bio) / len(all_bio) if all_bio else 0
+        avg_canopy = sum(all_canopy) / len(all_canopy) if all_canopy else 0
+
+        return GlobalAnalyticsResponse(
+            kpis=GlobalAnalyticsKPIs(
+                total_carbon_sequestered=round(total_carbon, 2),
+                average_ndvi=round(avg_ndvi, 4),
+                average_biodiversity=round(avg_bio, 4),
+                average_canopy_cover=round(avg_canopy, 2),
+                total_monitored_area_ha=round(total_area, 2),
+            ),
+            comparison_series=comparison_series,
         )

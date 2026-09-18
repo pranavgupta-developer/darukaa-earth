@@ -59,10 +59,11 @@ const RegisterPage: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="name">Full Name</label>
+            <label htmlFor="name" className="form-label">Full Name</label>
             <input
               id="name"
               type="text"
+              className="form-input"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Jane Doe"
@@ -71,10 +72,11 @@ const RegisterPage: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="reg-email">Email</label>
+            <label htmlFor="reg-email" className="form-label">Email</label>
             <input
               id="reg-email"
               type="email"
+              className="form-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
@@ -84,10 +86,11 @@ const RegisterPage: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="reg-password">Password</label>
+            <label htmlFor="reg-password" className="form-label">Password</label>
             <input
               id="reg-password"
               type="password"
+              className="form-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="At least 8 characters"
@@ -98,10 +101,11 @@ const RegisterPage: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="confirm-password">Confirm Password</label>
+            <label htmlFor="confirm-password" className="form-label">Confirm Password</label>
             <input
               id="confirm-password"
               type="password"
+              className="form-input"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"

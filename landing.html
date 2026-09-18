@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Darukaa.Earth - Geospatial environmental project management and analytics platform. Manage Carbon Sequestration, Biodiversity, and Reforestation projects.">
+    <title>Darukaa.Earth | Environmental Geospatial Intelligence</title>
+    
+    <!--
+    ====================================================================
+    DARUKAA.EARTH CUSTOMIZATION GUIDE
+    ====================================================================
+    
+    1. COLORS & BRANDING
+       Modify the variables in the :root selector below to instantly 
+       rebrand the site.
+       --color-primary: Main brand color (currently emerald green)
+       --color-primary-dark: Hover states and dark accents
+       --color-surface: Background color of cards/floating elements
+       
+    2. TYPOGRAPHY
+       The site uses a native system font stack for zero-latency loading.
+       To use a custom font, add a <link> tag and update --font-main.
+       
+    3. CONTENT
+       Search for section IDs (e.g., #hero, #features) to update text.
+    ====================================================================
+    -->
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            /* Brand Colors - Earthy, Professional, Modern */
+            --color-bg: #0f172a;
+            --color-surface: #1e293b;
+            --color-surface-hover: #334155;
+            --color-primary: #10b981;
+            --color-primary-dark: #059669;
+            --color-text: #f8fafc;
+            --color-text-muted: #94a3b8;
+            --color-border: rgba(255, 255, 255, 0.1);
+            
+            /* Typography (System Stack for zero external dependencies) */
+            --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Spacing & Layout */
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 4rem;
+            --spacing-2xl: 6rem;
+            --border-radius: 12px;
+            --max-width: 1200px;
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3, h4 {
+            line-height: 1.2;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+        }
+
+        h1 { font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: -0.02em; }
+        h2 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.01em; }
+        h3 { font-size: 1.5rem; }
+        
+        p {
+            color: var(--color-text-muted);
+            margin-bottom: var(--spacing-md);
+            font-size: 1.125rem;
+        }
+
+        a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        a:hover {
+            color: var(--color-primary-dark);
+        }
+
+        /* --- LAYOUT UTILITIES --- */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .section {
+            padding: var(--spacing-2xl) 0;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-block;
+            padding: 0.875rem 1.75rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            color: #fff;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--color-border);
+            color: var(--color-text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        /* --- NAVIGATION --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: var(--spacing-md) 0;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+            transition: all var(--transition-fast);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background-color: var(--color-primary);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-lg);
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-text);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--color-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            padding-top: 160px;
+            padding-bottom: var(--spacing-2xl);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Abstract Background Glow */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .hero h1 span {
+            color: var(--color-primary);
+        }
+
+        .hero p {
+            max-width: 700px;
+            margin: 0 auto var(--spacing-xl);
+            font-size: 1.25rem;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+        }
+
+        /* Hero Image/App Mockup */
+        .hero-mockup {
+            margin-top: var(--spacing-xl);
+            position: relative;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-border);
+            background: var(--color-surface);
+            padding: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .mockup-placeholder {
+            text-align: center;
+            color: var(--color-text-muted);
+        }
+        .mockup-placeholder svg {
+            width: 64px;
+            height: 64px;
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        /* --- FEATURES SECTION --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+
+        .feature-card {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            transition: transform var(--transition-smooth), border-color var(--transition-fast);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--color-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-md);
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- HOW IT WORKS (STEPS) --- */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        .step-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xl);
+            align-items: center;
+        }
+
+        .step-row:nth-child(even) {
+            direction: rtl; /* reverse layout */
+        }
+        
+        .step-row:nth-child(even) > * {
+            direction: ltr; /* fix text direction */
+        }
+
+        .step-content h3 {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background-color: var(--color-primary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .step-visual {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            aspect-ratio: 4/3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: var(--color-text-muted);
+        }
+
+        /* --- CTA SECTION --- */
+        .cta-section {
+            background: linear-gradient(135deg, var(--color-surface) 0%, #0f172a 100%);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            padding: var(--spacing-xl) 0 var(--spacing-md);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .footer-brand p {
+            max-width: 300px;
+            margin-top: 1rem;
+        }
+
+        .footer-links h4 {
+            color: var(--color-text);
+            margin-bottom: 1rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* --- ANIMATIONS (Scroll Reveal) --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--color-surface);
+                flex-direction: column;
+                padding: var(--spacing-lg);
+                border-bottom: 1px solid var(--color-border);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 { font-size: 2.5rem; }
+            .hero-cta { flex-direction: column; }
+            
+            .step-row {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+            .step-row:nth-child(even) {
+                direction: ltr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon"></span> Darukaa.Earth
+            </a>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">☰</button>
+            <div class="nav-links" id="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How it Works</a>
+                <a href="#analytics">Analytics</a>
+                <a href="http://localhost:5173" class="btn btn-primary" style="padding: 0.5rem 1rem;">Launch App</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= HERO SECTION ================= -->
+    <header class="section hero container">
+        <div class="reveal">
+            <h1>Geospatial Intelligence for<br><span>Environmental Projects</span></h1>
+            <p>Create, manage, and monitor Carbon Sequestration, Biodiversity, and Reforestation projects. Define geospatial boundaries and track environmental performance over time.</p>
+            <div class="hero-cta">
+                <a href="http://localhost:5173" class="btn btn-primary">Start Managing Projects</a>
+                <a href="#features" class="btn btn-outline">Explore Features</a>
+            </div>
+        </div>
+        
+        <div class="hero-mockup reveal">
+            <div class="mockup-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                    <line x1="8" y1="2" x2="8" y2="18"></line>
+                    <line x1="16" y1="6" x2="16" y2="22"></line>
+                </svg>
+                <h3>Interactive Map Dashboard</h3>
+                <p>High-performance Mapbox WebGL rendering</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= FEATURES SECTION ================= -->
+    <section id="features" class="section">
+        <div class="container">
+            <div class="reveal" style="text-align: center; max-width: 700px; margin: 0 auto;">
+                <h2>Built for Conservation Scale</h2>
+                <p>Everything you need to map sites, secure geospatial data, and monitor environmental outcomes from a single dashboard.</p>
+            </div>
+            
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">⬡</div>
+                    <h3>Precision Mapping</h3>
+                    <p>Draw and edit polygon boundaries directly on high-resolution satellite imagery using interactive Mapbox GL tools.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">⛁</div>
+                    <h3>PostGIS Storage</h3>
+                    <p>Secure, enterprise-grade spatial database infrastructure automatically calculates and stores precise area metrics in hectares.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">📈</div>
+                    <h3>Time-Series Analytics</h3>
+                    <p>Visualize critical environmental indicators over time with interactive Chart.js dashboards tailored for each site.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section id="how-it-works" class="section" style="background-color: var(--color-surface);">
+        <div class="container">
+            <h2 class="reveal" style="text-align: center; margin-bottom: var(--spacing-xl);">From Planning to Performance</h2>
+            
+            <div class="steps">
+                <!-- Step 1 -->
+                <div class="step-row reveal">
+                    <div class="step-content">
+                        <h3><span class="step-number">1</span> Create your Project</h3>
+                        <p>Initialize a secure, authenticated workspace. Define your project type—whether it's Carbon Sequestration, Biodiversity Conservation, or Reforestation—and set your goals.</p>
+                    </div>
+                    <div class="step-visual">Project Dashboard UI</div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="step-row reveal">
+                    <div class="step-content">
+                        <h3><span class="step-number">2</span> Define Geospatial Boundaries</h3>
+                        <p>Use the integrated map interface to draw precise polygon boundaries around your sites. The backend automatically processes the GeoJSON and calculates spatial area.</p>
+                    </div>
+                    <div class="step-visual">Mapbox Polygon Drawing</div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="step-row reveal">
+                    <div class="step-content">
+                        <h3><span class="step-number">3</span> Monitor Environmental Metrics</h3>
+                        <p>Access the site dashboard to view mock time-series data for NDVI, Canopy Cover, and Carbon metrics. Designed with a flexible REST API to integrate real data providers later.</p>
+                    </div>
+                    <div class="step-visual">Chart.js Analytics View</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= ANALYTICS HIGHLIGHT ================= -->
+    <section id="analytics" class="section container">
+        <div class="reveal" style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <h2>Track What Matters</h2>
+            <p>Our analytics suite provides distinct time-series metrics crucial for reporting on environmental project success.</p>
+            
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                <span style="background: rgba(16,185,129,0.1); color: var(--color-primary); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">NDVI Index</span>
+                <span style="background: rgba(16,185,129,0.1); color: var(--color-primary); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">Carbon Sequestration</span>
+                <span style="background: rgba(16,185,129,0.1); color: var(--color-primary); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">Biodiversity Index</span>
+                <span style="background: rgba(16,185,129,0.1); color: var(--color-primary); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">Canopy Cover</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CTA SECTION ================= -->
+    <section class="section cta-section">
+        <div class="container cta-content reveal">
+            <h2>Ready to map your impact?</h2>
+            <p>Deploy the Darukaa.Earth platform today and start managing your conservation efforts with geospatial precision.</p>
+            <br>
+            <a href="http://localhost:5173" class="btn btn-primary" style="font-size: 1.125rem;">Access the Demo Platform</a>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <span class="logo-icon"></span> Darukaa.Earth
+                    </a>
+                    <p>A production-ready geospatial platform for environmental project management, mapping, and analytics.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">Workflow</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">API Documentation</a></li>
+                        <li><a href="#">Deployment Guide</a></li>
+                        <li><a href="https://github.com" target="_blank">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Darukaa.Earth. Built for the Hackathon.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        // 1. Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // 2. Navbar Background on Scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.style.backgroundColor = 'rgba(15, 23, 42, 0.95)';
+                navbar.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)';
+            } else {
+                navbar.style.backgroundColor = 'rgba(15, 23, 42, 0.8)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // 3. Scroll Reveal Animation using Intersection Observer
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Only animate once
+                }
+            });
+        }, revealOptions);
+
+        revealElements.forEach(el => {
+            revealObserver.observe(el);
+        });
+        
+        // Trigger initial check for elements already in viewport
+        setTimeout(() => {
+            revealElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight) {
+                    el.classList.add('active');
+                }
+            });
+        }, 100);
+    </script>
+</body>
+</html>

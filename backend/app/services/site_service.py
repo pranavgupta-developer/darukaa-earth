@@ -77,6 +77,17 @@ class SiteService:
             raise NotFoundError("Site", str(site_dict.id))
 
         logger.info("Site created: %s in project %s", site_data["id"], project_id)
+        
+        # Generate mock analytics data for the new site automatically
+        try:
+            from app.services.analytics_service import AnalyticsService
+            analytics_svc = AnalyticsService(self.site_repo.session)
+            # site_dict.id is the UUID of the newly created site
+            await analytics_svc.generate_mock_data_for_site(site_dict.id)
+            logger.info("Mock analytics generated for site: %s", site_dict.id)
+        except Exception as e:
+            logger.error("Failed to generate mock analytics for site %s: %s", site_dict.id, e)
+
         return SiteResponse(**site_data)
 
     async def list_sites(

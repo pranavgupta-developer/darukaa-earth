@@ -30,6 +30,53 @@ class AnalyticsService:
         self.site_repo = SiteRepository(db)
         self.project_repo = ProjectRepository(db)
 
+    async def generate_mock_data_for_site(self, site_id: uuid.UUID) -> None:
+        """Generate 24 months of mock analytics data for a specific site."""
+        import math, random
+        from datetime import date, timedelta
+        from app.models.site_analytics import SiteAnalytics
+        
+        records: list[SiteAnalytics] = []
+        today = date.today()
+        start = today - timedelta(days=730)
+        current = start
+
+        base_ndvi = random.uniform(0.35, 0.55)
+        base_carbon = random.uniform(1.0, 2.5)
+        base_biodiversity = random.uniform(0.4, 0.6)
+        base_canopy = random.uniform(40, 55)
+
+        month_idx = 0
+        while current <= today:
+            seasonal = math.sin(2 * math.pi * (current.month - 3) / 12)
+            ndvi = base_ndvi + 0.2 * seasonal + random.gauss(0, 0.03)
+            ndvi = max(0.1, min(0.95, ndvi))
+
+            carbon = base_carbon + 0.05 * month_idx + random.gauss(0, 0.2)
+            carbon = max(0.1, carbon)
+
+            biodiversity = base_biodiversity + random.gauss(0, 0.02)
+            biodiversity = max(0.1, min(1.0, biodiversity))
+
+            canopy = base_canopy + 0.3 * month_idx + random.gauss(0, 1.5)
+            canopy = max(10, min(95, canopy))
+
+            records.append(
+                SiteAnalytics(
+                    site_id=site_id,
+                    recorded_date=current,
+                    ndvi=round(ndvi, 4),
+                    carbon_sequestration_tons=round(carbon, 2),
+                    biodiversity_index=round(biodiversity, 4),
+                    canopy_cover_pct=round(canopy, 1),
+                )
+            )
+            current += timedelta(days=30)
+            month_idx += 1
+
+        self.analytics_repo.session.add_all(records)
+        await self.analytics_repo.session.commit()
+
     async def get_site_analytics(
         self,
         site_id: uuid.UUID,
